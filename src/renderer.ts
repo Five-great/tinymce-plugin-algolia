@@ -1,5 +1,5 @@
 const promiseLimit = require('promise-limit')
-const puppeteer = require('puppeteer')
+import puppeteer from 'puppeteer'
 const waitForRender = function (options) {
   !options&&(options =  {})
      
