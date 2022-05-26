@@ -1,6 +1,4 @@
 
-import fs from 'fs'
-import path from 'path'
 //@ts-ignore
 import Prerenderer from "@prerenderer/prerenderer"
 import PuppeteerSpaRenderer from './renderer'
@@ -65,42 +63,7 @@ export function PrerenderSpaPlugin (...args) {
 //     }
 //   }
 // }
-const mkdirs = (pathname) => {
-  // 需要判断是否是绝对路径（避免不必要的 bug）
- return new Promise((resolve,reject)=>{
-  // 获取相对路径
-  
-  let floders = pathname.split(path.sep);
 
-  let _pathname = floders.shift()+path.sep;
-  // console.log(floders);
-  floders.forEach((floder,index)=>{
-      _pathname = _pathname+floder+path.sep
-    try {
-      // 没有异常，文件已经创建，提示用户该文件已经创建
-     let _stat = fs.statSync(_pathname);
-      // console.log(_stat);
-      !_stat&&fs.mkdirSync(_pathname);
-    } catch (err) {
-      // 抛出异常，文件不存在则创建文件
-   
-      
-      try {
-        // 避免父文件还没有创建的时候，先创建子文件所出现的意外 bug，这里选择同步创建文件
-        fs.mkdirSync(_pathname);
-      } catch (error) {
-        reject(error)
-      }
-     
-   }
-  
-  })
-  resolve('ok')
-
-  
-  // });
-})
-}
   
 
 

@@ -1,8 +1,5 @@
-import path, { join } from "path"
 import { PrerenderSpaOptions, PrerenderSpaPlugin } from "./prerenderSpaPlugin"
 import PuppeteerSpaRenderer from "./renderer"
-import fs from "fs"
-
 
 import algoliasearch from 'algoliasearch';
 // process.env.TP_ALGOLIA = {
