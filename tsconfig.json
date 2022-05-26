@@ -1,0 +1,38 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "useDefineForClassFields": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "strict": false,
+    "strictFunctionTypes": false,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "forceConsistentCasingInFileNames": true,
+    "allowSyntheticDefaultImports": true,
+    "jsx": "preserve",
+    "sourceMap": true,
+    "importHelpers": true,
+    "incremental": true,
+    "experimentalDecorators": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "lib": ["esnext", "dom"],
+    "baseUrl": ".",
+    "allowJs": true,
+    "paths": {
+      "/@/*": ["src/*"],
+      "@build/*": ["build/*"],
+      "@npkg/tinymce-plugin/*": ["packahes/npkg/tinymce-plugin/*"],
+      "/#/*": ["types/*"]
+    },
+  },
+  "include": [
+      "src/**/*.ts",
+     "src/**/*.d.ts", 
+     "src/**/*.tsx", 
+     "src/**/*.vue",
+     "vite.config.ts"
+, "src/assets/ifarmeInit.js", "src/assets/ifarmeInit.js"],
+  "exclude": ["node_modules", "dist53", "**/*.js"]
+}
