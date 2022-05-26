@@ -39,7 +39,7 @@ export const setRoutes = (router:any) => {
 
 export  async function  prerenderSpa(options?: PrerenderSpaOptions) {
       let routes = await  PrerenderSpaPlugin({ 
-        staticDir: require('path').resolve('./src/index.html'),
+        staticDir: require('path').resolve('./src'),
         routes: ['/nextdisplay/vuedemo.html'],
         renderer: new PuppeteerSpaRenderer({
           // headless: false,
