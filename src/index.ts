@@ -39,7 +39,7 @@ export const setRoutes = (router:any) => {
 
 export  async function  prerenderSpa(options?: PrerenderSpaOptions) {
       let routes = await  PrerenderSpaPlugin({ 
-        staticDir: './dist',
+        staticDir: require('path').resolve(__dirname),
         routes: ['/nextdisplay/vuedemo.html'],
         renderer: new PuppeteerSpaRenderer({
           // headless: false,
@@ -65,6 +65,7 @@ export  async function  prerenderSpa(options?: PrerenderSpaOptions) {
         })
        // fs.writeFileSync('./dist/algolia2.json',JSON.stringify({data: routes},null,2),'utf8')
         // algoliasearchFun()
+        __dirName
         await algoliasearchFun(algoliaList)
       }
     
