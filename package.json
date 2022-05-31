@@ -13,7 +13,11 @@
     "vite": "^2.9.1"
   },
   "dependencies": {
+    "ms": "2.1.2",
+    "rimraf": "3.0.2",
+    "debug": "4.3.4",
     "path": "^0.12.7",
+    "extract-zip": "2.0.1",
     "promise-limit": "^2.7.0",
     "@prerenderer/prerenderer": "^0.7.2",
     "puppeteer": "^13.7.0",
