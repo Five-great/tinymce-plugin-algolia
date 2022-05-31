@@ -12,7 +12,7 @@ export  async function  prerenderSpa(options?: PrerenderSpaOptions) {
         staticDir: require('path').resolve('./src'),
         routes: ['/nextplan/info.html'],
         renderer: new PuppeteerSpaRenderer({
-          headless: false,
+        //  headless: false,
           maxConcurrentRoutes: 4,
           // renderAfterTime: 15000,
           renderAfterDocumentEventDelay: 3000,
