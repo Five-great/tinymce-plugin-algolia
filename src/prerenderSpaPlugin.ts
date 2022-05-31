@@ -72,30 +72,18 @@ const afterEmit = (_options ,done) => {
   const PrerendererInstance = new Prerenderer(_options)
   PrerendererInstance.initialize()
     .then(() => {
-      return PrerendererInstance.renderRoutes(_options.routes || [])
+       PrerendererInstance.renderRoutes(_options.routes || []).then(renderedRoutes =>{
+        done(renderedRoutes)
+        PrerendererInstance.destroy()
+       })
+      .catch(err => {
+        PrerendererInstance.destroy()
+        const msg = '[vite-prerender-spa] Unable to prerender all routes!'
+        console.error(msg)
+        // compilation.errors.push(new Error(msg))
+        done('err')
+      })
     })
     // Backwards-compatibility with v2 (postprocessHTML should be migrated to postProcess)
-    .then(renderedRoutes =>{
-      return (_options .postProcessHtml
-      ? renderedRoutes.map(renderedRoute => {
-        const processed = _options .postProcessHtml(renderedRoute)
-        if (typeof processed === 'string') renderedRoute.html = processed
-        else renderedRoute = processed
-
-        return renderedRoute
-      })
-      : renderedRoutes)
-    }
-    )
-    .then(r => {
-      PrerendererInstance.destroy()
-      done(r)
-    })
-    .catch(err => {
-      PrerendererInstance.destroy()
-      const msg = '[vite-prerender-spa] Unable to prerender all routes!'
-      console.error(msg)
-      // compilation.errors.push(new Error(msg))
-      done('err')
-    })
+   
 }

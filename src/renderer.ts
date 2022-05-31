@@ -1,5 +1,36 @@
 const promiseLimit = require('promise-limit')
 import puppeteer from 'puppeteer'
+
+import algoliasearch from 'algoliasearch';
+// process.env.TP_ALGOLIA = {
+//     APPLICATION_ID: 'LIXBD9IHZ6',
+//     ADMIN_API_KEY: '73184f97149c9e07ece1eae4620ac374',
+//     INDEX_NAME: 'tinymce-plugin-dev'
+// }
+// console.log( process.env.TP_ALGOLIA);
+
+let ALGOLIA = process.env.TP_ALGOLIA && process.env.TP_ALGOLIA && !process.env.TP_ALGOLIA.INDEX_NAME? JSON.parse(process.env.TP_ALGOLIA||{}) : process.env.TP_ALGOLIA
+ALGOLIA={
+  APPLICATION_ID: 'LIXBD9IHZ6',
+  ADMIN_API_KEY: '73184f97149c9e07ece1eae4620ac374',
+  INDEX_NAME: 'tinymce-plugin-dev'
+}
+const APPLICATION_ID = ALGOLIA.APPLICATION_ID;
+const ADMIN_API_KEY = ALGOLIA.ADMIN_API_KEY;
+const INDEX_NAME = ALGOLIA.INDEX_NAME;
+const client = algoliasearch(APPLICATION_ID, ADMIN_API_KEY)
+const index = client.initIndex(INDEX_NAME)
+
+const algoliasearchFun = async(objects)=>{
+  console.log("Save Objects start");
+    try {
+       let {objectIDs} = await index.saveObjects(objects, { autoGenerateObjectIDIfNotExist: true })
+        console.log(objectIDs);
+        console.log("Save Objects End");
+    }catch (err) {
+      console.error(err)
+    }
+}
 const waitForRender = function (options) {
   !options&&(options =  {})
      
@@ -173,7 +204,8 @@ class PuppeteerSpaRenderer {
     this._newrendererOptions = { }
     const options = this._rendererOptions
     let excludeRoutes = ['index',"/:path(.*)"]
-
+    //await index.clearObjects()
+    let arrList = []
     const limiter = promiseLimit(this._rendererOptions.maxConcurrentRoutes)
     const pagePromises = (_routes:Array<any>): Promise<Array<any>> => {
       return  new Promise((resolve, reject) => { 
@@ -181,6 +213,8 @@ class PuppeteerSpaRenderer {
           _routes.map(
             (route, index) => limiter(
               async () => {
+                try {
+                  arrList.push(route)
                console.log(`%c[vite-prerender-spa] %c Prerender page ...${route}`, 'color: blue;','color: #ffff;');
                 const page = await this._puppeteer.newPage()
                 excludeRoutes.push(route)
@@ -222,18 +256,29 @@ class PuppeteerSpaRenderer {
                     this._newrendererOptions =  await page.evaluate(waitForRender, this._rendererOptions)
                       : routeAlgolia = await page.evaluate(waitForRender, this._newrendererOptions)
 
-                      // console.log(routeAlgolia['__ALGOLIA_ROUTES__'])
+                      // console.log()
+                      if(routeAlgolia['__ALGOLIA_ROUTES__']&&routeAlgolia['__ALGOLIA_ROUTES__'].length>0){
+                       await algoliasearchFun(routeAlgolia['__ALGOLIA_ROUTES__'])
+                      }
+                      // idx++
+                      // console.log(idx);
+                      
+                     
                 const result = {
                   algolia: routeAlgolia['__ALGOLIA_ROUTES__'],
                   originalRoute: route,
-                  route: await page.evaluate('window.location.pathname'),
-                  html: await page.content()
+                  route: '',
+                  html: ''
                 }
-
+//  console.log(arrList)
                 // console.log(result.algolia);
                 
                 await page.close()
                 return result
+
+              } catch (error) {
+                  console.log(error);
+              }
               }
             )
           )
@@ -244,6 +289,7 @@ class PuppeteerSpaRenderer {
     let results:any = await pagePromises(routes)
     let routes2 = []
     let newRoutes = this._newrendererOptions['__PRERENDER_ROUTES__']
+
       newRoutes = newRoutes.filter(route => {
         if(!(route.children&&route.children.length>0)&&excludeRoutes.indexOf(route.path)===-1){
            routes2.push(route.path)
